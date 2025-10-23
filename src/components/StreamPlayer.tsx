@@ -40,10 +40,15 @@ export const StreamPlayer = ({ streamUrl }: StreamPlayerProps) => {
         debug: false,
         enableWorker: true,
         lowLatencyMode: true,
-        xhrSetup: (xhr) => {
-          // Agregar header para ngrok en producción
+        xhrSetup: (xhr, url) => {
+          // En producción, reescribir las URLs para usar el proxy de Vercel
           if (!import.meta.env.DEV) {
-            xhr.setRequestHeader('ngrok-skip-browser-warning', 'true');
+            // Si la URL es relativa o contiene el dominio de ngrok, usar el proxy
+            if (url.includes('ngrok-free.dev') || url.startsWith('http')) {
+              const urlObj = new URL(url);
+              const path = urlObj.pathname.replace(/^\//, '');
+              xhr.open('GET', `/api/proxy?path=${encodeURIComponent(path)}`, true);
+            }
           }
         },
       });

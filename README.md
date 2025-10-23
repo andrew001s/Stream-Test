@@ -105,10 +105,10 @@ stream-viewer/
 
 ### CORS errors
 
-Si ves errores de CORS, asegúrate de que tu servidor ngrok tenga los headers correctos configurados:
+Esta aplicación incluye un **proxy serverless en Vercel** (`/api/proxy.js`) que maneja automáticamente los problemas de CORS. El proxy:
 
-```
-Access-Control-Allow-Origin: *
-Access-Control-Allow-Methods: GET, OPTIONS
-Access-Control-Allow-Headers: *
-```
+- Agrega los headers CORS necesarios
+- Reenvía las peticiones al servidor ngrok
+- Funciona tanto para el manifest `.m3u8` como para los segmentos `.ts`
+
+Si necesitas cambiar el servidor backend, actualiza la variable `VITE_STREAM_URL` en Vercel o en tu archivo `.env`.
