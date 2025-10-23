@@ -2,8 +2,10 @@ import { StreamPlayer } from './components/StreamPlayer';
 import './App.css';
 
 function App() {
-  // Usa el proxy local de Vite para evitar problemas de CORS
-  const streamUrl = '/stream/stream.m3u8';
+  // En desarrollo usa el proxy de Vite, en producción usa la URL directa de ngrok
+  const streamUrl = import.meta.env.DEV
+    ? '/stream/stream.m3u8'  // Proxy local en desarrollo
+    : import.meta.env.VITE_STREAM_URL || 'https://superchivalrous-susana-unfaithfully.ngrok-free.dev/stream.m3u8';
 
   return (
     <div className="app">

@@ -38,11 +38,30 @@ Los archivos se generarán en la carpeta `dist/`
 
 ## ⚙️ Configuración
 
-Para cambiar la URL del stream, edita el archivo `src/App.tsx`:
+### Variables de entorno
 
-```typescript
-const streamUrl = 'TU_URL_AQUI.m3u8';
+1. Copia el archivo de ejemplo:
+```bash
+cp .env.example .env
 ```
+
+2. Edita `.env` y configura tu URL de ngrok:
+```bash
+VITE_STREAM_URL=https://tu-url-ngrok.ngrok-free.dev/stream.m3u8
+```
+
+### Configuración en Vercel
+
+Para desplegar en Vercel, agrega la variable de entorno en el dashboard:
+
+1. Ve a tu proyecto en Vercel
+2. Settings → Environment Variables
+3. Agrega: `VITE_STREAM_URL` con tu URL de ngrok
+4. Redeploy el proyecto
+
+**Nota:** La app detecta automáticamente el entorno:
+- **Desarrollo:** Usa el proxy de Vite (`/stream/stream.m3u8`) para evitar CORS
+- **Producción:** Usa la URL directa de ngrok desde `VITE_STREAM_URL`
 
 ## 🛠️ Tecnologías
 

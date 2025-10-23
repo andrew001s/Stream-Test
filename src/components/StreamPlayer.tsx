@@ -40,6 +40,12 @@ export const StreamPlayer = ({ streamUrl }: StreamPlayerProps) => {
         debug: false,
         enableWorker: true,
         lowLatencyMode: true,
+        xhrSetup: (xhr) => {
+          // Agregar header para ngrok en producción
+          if (!import.meta.env.DEV) {
+            xhr.setRequestHeader('ngrok-skip-browser-warning', 'true');
+          }
+        },
       });
 
       hlsRef.current = hls;
