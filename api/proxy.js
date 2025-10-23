@@ -52,14 +52,25 @@ export default async function handler(req, res) {
       res.setHeader('Content-Type', contentType);
     }
 
-    const contentLength = response.headers.get('content-length');
-    if (contentLength) {
-      res.setHeader('Content-Length', contentLength);
+    // Si es un manifest .m3u8, modificar el contenido para reescribir las URLs
+    if (path.endsWith('.m3u8')) {
+      const text = await response.text();
+      // Reescribir URLs relativas de segmentos para usar el proxy
+      const modifiedText = text.replace(
+        /(stream\d+\.ts)/g,
+        (match) => `/api/proxy?path=${match}`
+      );
+      res.setHeader('Content-Length', String(Buffer.byteLength(modifiedText)));
+      res.status(200).send(modifiedText);
+    } else {
+      // Para otros archivos (segmentos .ts), transmitir directamente
+      const contentLength = response.headers.get('content-length');
+      if (contentLength) {
+        res.setHeader('Content-Length', contentLength);
+      }
+      const data = await response.arrayBuffer();
+      res.status(200).send(Buffer.from(data));
     }
-
-    // Transmitir la respuesta
-    const data = await response.arrayBuffer();
-    res.status(200).send(Buffer.from(data));
 
   } catch (error) {
     console.error('Proxy error:', error);

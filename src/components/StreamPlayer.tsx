@@ -36,22 +36,45 @@ export const StreamPlayer = ({ streamUrl }: StreamPlayerProps) => {
     if (Hls.isSupported()) {
       updateStatus('Inicializando HLS.js...', 'info');
 
-      const hls = new Hls({
+      // Configurar HLS con loader personalizado
+      const hlsConfig: Partial<Hls['config']> = {
         debug: false,
         enableWorker: true,
         lowLatencyMode: true,
-        xhrSetup: (xhr, url) => {
-          // En producción, reescribir las URLs para usar el proxy de Vercel
-          if (!import.meta.env.DEV) {
-            // Si la URL es relativa o contiene el dominio de ngrok, usar el proxy
-            if (url.includes('ngrok-free.dev') || url.startsWith('http')) {
-              const urlObj = new URL(url);
-              const path = urlObj.pathname.replace(/^\//, '');
-              xhr.open('GET', `/api/proxy?path=${encodeURIComponent(path)}`, true);
-            }
+      };
+
+      // En producción, interceptar las peticiones para reescribir las URLs
+      if (!import.meta.env.DEV) {
+        hlsConfig.xhrSetup = (xhr: XMLHttpRequest, url: string) => {
+          // Si ya incluye /api/proxy, no hacer nada
+          if (url.includes('/api/proxy')) {
+            return;
           }
-        },
-      });
+
+          // Extraer solo el nombre del archivo de la URL
+          let targetPath = url;
+
+          // Si es una URL absoluta (http://localhost:4173/api/stream123.ts)
+          if (url.startsWith('http')) {
+            const urlObj = new URL(url);
+            targetPath = urlObj.pathname.replace(/^\/api\//, '').replace(/^\//, '');
+          }
+          // Si es relativa pero empieza con /api/ (/api/stream123.ts)
+          else if (url.startsWith('/api/')) {
+            targetPath = url.replace(/^\/api\//, '');
+          }
+          // Si es solo el nombre del archivo (stream123.ts)
+          else if (!url.startsWith('/')) {
+            targetPath = url;
+          }
+
+          // Reescribir la URL para usar el proxy
+          const proxyUrl = `/api/proxy?path=${encodeURIComponent(targetPath)}`;
+          xhr.open('GET', proxyUrl, true);
+        };
+      }
+
+      const hls = new Hls(hlsConfig);
 
       hlsRef.current = hls;
 
