@@ -52,7 +52,7 @@ export const StreamPlayer = ({ streamUrl }: StreamPlayerProps) => {
         updateStatus('Descargando manifest (.m3u8)...', 'warning');
       });
 
-      hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+      hls.on(Hls.Events.MANIFEST_PARSED, (_event, data) => {
         updateStatus(`Stream cargado! ${data.levels.length} calidad(es) disponible(s)`, 'success');
         video.play().catch(() => {
           updateStatus('Listo para reproducir - Click en play', 'warning');
@@ -65,7 +65,7 @@ export const StreamPlayer = ({ streamUrl }: StreamPlayerProps) => {
         }
       });
 
-      hls.on(Hls.Events.ERROR, (event, data) => {
+      hls.on(Hls.Events.ERROR, (_event, data) => {
         console.error('HLS Error:', data);
 
         if (data.fatal) {
