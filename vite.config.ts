@@ -7,18 +7,18 @@ export default defineConfig({
   server: {
     proxy: {
       '/stream': {
-        target: 'https://superchivalrous-susana-unfaithfully.ngrok-free.dev',
+        target: 'https://alexander-cosmogonical-denumerably.ngrok-free.dev',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/stream/, ''),
-        configure: (proxy, _options) => {
+        configure: (proxy) => {
           proxy.on('proxyReq', (proxyReq) => {
             proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
           });
         },
       },
       '/api/proxy': {
-        target: 'https://superchivalrous-susana-unfaithfully.ngrok-free.dev',
+        target: 'https://alexander-cosmogonical-denumerably.ngrok-free.dev',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => {
@@ -27,7 +27,7 @@ export default defineConfig({
           const targetPath = url.searchParams.get('path') || '';
           return `/${targetPath}`;
         },
-        configure: (proxy, _options) => {
+        configure: (proxy) => {
           proxy.on('proxyReq', (proxyReq) => {
             proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
           });
@@ -38,7 +38,7 @@ export default defineConfig({
   preview: {
     proxy: {
       '/api/proxy': {
-        target: 'https://superchivalrous-susana-unfaithfully.ngrok-free.dev',
+        target: 'https://alexander-cosmogonical-denumerably.ngrok-free.dev',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => {
@@ -47,7 +47,7 @@ export default defineConfig({
           const targetPath = url.searchParams.get('path') || '';
           return `/${targetPath}`;
         },
-        configure: (proxy, _options) => {
+        configure: (proxy) => {
           proxy.on('proxyReq', (proxyReq) => {
             proxyReq.setHeader('ngrok-skip-browser-warning', 'true');
           });
