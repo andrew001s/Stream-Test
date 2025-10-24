@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 
   // Obtener la URL del stream desde variables de entorno
   const streamBaseUrl = process.env.VITE_STREAM_URL?.replace('/stream.m3u8', '') ||
-                        'https://superchivalrous-susana-unfaithfully.ngrok-free.dev';
+                        'https://alexander-cosmogonical-denumerably.ngrok-free.dev';
 
   // Obtener el path solicitado (ej: /stream.m3u8 o /segment0.ts)
   const { path } = req.query;
